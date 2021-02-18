@@ -23,7 +23,16 @@ To check is a card number is valid:
 ```
 console.log(validateCred(cardNumber));
 ```
-And then:
+To check which credit cards are invalid:
+```
+console.log(findInvalidCards(batch));
+```
+To determine which companies own the invalid credit cards
+```
+console.log(idInvalidCardCompanies(batch));
+```
+
+To see the result, run node:
 ```
 node main.js
 ```
