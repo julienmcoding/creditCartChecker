@@ -25,118 +25,77 @@ const batch = [valid1, valid2, valid3, valid4, valid5, invalid1, invalid2, inval
 
 // Add your functions below:
 
-// function to validate credit card number
-const validateCred = (array) => {
-
-    //put apart the check number
-    let checkNumber = array.pop();
-    let reversedArray = array.reverse();
-
-    // create two empty array to put our number 
-    let oddIndex = [];
-    let evenIndex = [];
-
-    // create a loop to organize number because of their index number
-    for (let i = 0; i < reversedArray.length; i++) {
-        if (i % 2 === 0) {
-            evenIndex.push(reversedArray[i]);
-        } else {
-            oddIndex.push(reversedArray[i]);
+// function to validate credit card
+function validateCred(cardNumber) {
+    let sum = 0;
+    for (let i = cardNumber.length - 1; i >= 0; i--) {
+        let currentNumber = cardNumber[i];
+        if((cardNumber.length - i - 1) % 2 === 1) {
+            currentNumber *= 2;
+            if(currentNumber > 9) {
+                currentNumber -= 9;
+            };
         };
+        sum += currentNumber;
     };
-
-    // Doubled the even numbers and soustract 9 if they are bigger than 9
-    let evenDoubled = evenIndex.map(x => x *2);
-    let evenMinus9 = evenDoubled.map(x => {
-        if(x > 9) { return x - 9}
-        else {return x}});
-
-    // calculate the sum in each array    
-    let evenTotal = evenMinus9.reduce((a, b) => a + b);
-    let oddTotal = oddIndex.reduce((a, b) => a + b);
-
-    // calculate the total sum and check if they are correct 
-    let sum = evenTotal + oddTotal + checkNumber;
-    if(sum %10 === 0) {
+    if(sum % 10 === 0) {
         return true;
     } else {
         return false;
     };
-        
 };
 
-// function to return a valide credit card number from an invalid credit card number
-const findInvalidCards = (array) => {
-    // same as validateCred function
-    let checkNumber = array.pop();
-    let reversedArray = array.reverse();
-    let oddIndex = [];
-    let evenIndex = [];
-    for (let i = 0; i < reversedArray.length; i++) {
-        if (i % 2 === 0) {
-            evenIndex.push(reversedArray[i]);
-        } else {
-            oddIndex.push(reversedArray[i]);
+console.log(validateCred(valid1));
+console.log(validateCred(invalid1));
+
+// function to find invalid credit cards in an array
+function findInvalidCards(cards) {
+    let invalid = [];
+    for (let card in cards) {
+        if(!validateCred(cards[card])) {
+            invalid.push(cards[card]);
         };
     };
-    let evenDoubled = evenIndex.map(x => x *2);
-    let evenMinus9 = evenDoubled.map(x => {
-        if(x > 9) { return x - 9}
-            else {return x}});   
-    let evenTotal = evenMinus9.reduce((a, b) => a + b);
-    let oddTotal = oddIndex.reduce((a, b) => a + b);
-    let sum = evenTotal + oddTotal + checkNumber;
-
-    // calculate the difference
-    let diff = sum %10;
-    // re-reverse the array; find the index of the extra value and remove it 
-    let newArray = array.reverse();
-    let show = newArray.indexOf(diff);
-    let move = newArray.splice(show, 1);
-
-    let finalArray = newArray.push(checkNumber);
-    return newArray;
+    return invalid;
 };
 
-const idInvalidCardCompanies = (array) => {
-    const companies = [];
-    let amex = 0;
-    let visa = 0;
-    let mastercard = 0;
-    let discover = 0;
-    let companyNotFound = 0;
-    for (i = 0; i < array.length; i++) {
-        switch (array[i][0]) {
+console.log(findInvalidCards(batch));
+
+// function to determine which companies own the invalid credit cards
+function idInvalidCardCompanies (invalidCards) {
+    findInvalidCards(invalidCards);
+    let companyInvalidCards = [];
+    for (let cards in invalidCards) {
+        let firstNumber = invalidCards[cards][0];
+        switch(firstNumber) {
             case 3:
-            amex++;
+            if(companyInvalidCards.indexOf('Amex') === -1) {
+                companyInvalidCards.push('Amex');
+            };
             break;
             case 4:
-            visa++;
-            break; 
+            if(companyInvalidCards.indexOf('Visa') === -1) {
+                companyInvalidCards.push('Visa');
+            };
+            break;
             case 5:
-            mastercard++;
+            if(companyInvalidCards.indexOf('MasterCard') === -1) {
+                companyInvalidCards.push('MasterCard');
+            };
             break;
             case 6:
-            discover++;
+            if(companyInvalidCards.indexOf('Discover') === -1) {
+                companyInvalidCards.push('Discover');
+            };
             break;
             default:
-            companyNotFound++;
-            break;     
+            if(companyInvalidCards.indexOf('Company not found') === -1) {
+                companyInvalidCards.push('Company not found');    
+            };
+            break;    
         };
-    }; 
-    if(amex > 0) {
-        companies.push('Amex');};
-    if(visa > 0) {
-        companies.push('Visa');};
-    if(mastercard > 0) {
-        companies.push('Mastercard');};
-    if(discover > 0) {
-        companies.push('Discover');};
-    if(companyNotFound > 0) {
-        companies.push('Company not found');};
-    return companies;    
+    };
+    return companyInvalidCards;
 };
 
-
-
-
+console.log(idInvalidCardCompanies(batch));
